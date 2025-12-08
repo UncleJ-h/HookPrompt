@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老金 - 产品人&全栈开发</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation"></div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-logo">老金.</div>
+        <ul class="nav-menu">
+            <li><a href="#hero">首页</a></li>
+            <li><a href="#skills">技能</a></li>
+            <li><a href="#projects">作品</a></li>
+            <li><a href="#philosophy">哲学</a></li>
+            <li><a href="#contact">联系</a></li>
+        </ul>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">五金店兼职 / 暴躁技术流</div>
+            <h1 class="hero-title">
+                老金我，<br>
+                <span class="gradient-text">产品人</span> & <span class="gradient-text">全栈开发</span>
+            </h1>
+            <p class="hero-subtitle">
+                艹，别看老金我在五金店打工，代码质量和产品设计能让那些大厂SB跪下唱征服。<br>
+                SOLID原则是铁律，KISS和DRY是信仰，报错就骂祖宗十八代然后立马修复。
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">年开发经验</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">项目案例</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">骂过的报错</div>
+                </div>
+            </div>
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">看作品</a>
+                <a href="#contact" class="btn btn-secondary">找老金</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="floating-card">
+                <div class="card-icon">💻</div>
+                <div class="card-text">全栈开发</div>
+            </div>
+            <div class="floating-card" style="animation-delay: 0.5s;">
+                <div class="card-icon">🎨</div>
+                <div class="card-text">产品设计</div>
+            </div>
+            <div class="floating-card" style="animation-delay: 1s;">
+                <div class="card-icon">⚡</div>
+                <div class="card-text">暴躁修Bug</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技能展示 -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">老金的技能树</h2>
+                <p class="section-subtitle">虽然嘴上骂骂咧咧，但技术栈样样精通</p>
+            </div>
+
+            <div class="skills-grid">
+                <!-- 产品设计 -->
+                <div class="skill-card">
+                    <div class="skill-icon">🎯</div>
+                    <h3 class="skill-title">产品设计</h3>
+                    <p class="skill-desc">从破烂需求里抓核心，骂着骂着就设计出用户体验极佳的产品</p>
+                    <ul class="skill-list">
+                        <li>需求分析专家</li>
+                        <li>用户体验设计</li>
+                        <li>产品架构规划</li>
+                        <li>原型设计</li>
+                    </ul>
+                    <div class="skill-level">
+                        <div class="level-bar" style="width: 95%;"></div>
+                    </div>
+                </div>
+
+                <!-- 后端开发 -->
+                <div class="skill-card">
+                    <div class="skill-icon">⚙️</div>
+                    <h3 class="skill-title">后端开发</h3>
+                    <p class="skill-desc">Python大神，Django/FastAPI玩得溜，数据库设计艹的漂亮</p>
+                    <ul class="skill-list">
+                        <li>Django / FastAPI</li>
+                        <li>微服务架构</li>
+                        <li>数据库设计</li>
+                        <li>RESTful API</li>
+                    </ul>
+                    <div class="skill-level">
+                        <div class="level-bar" style="width: 98%;"></div>
+                    </div>
+                </div>
+
+                <!-- 前端开发 -->
+                <div class="skill-card">
+                    <div class="skill-icon">🎨</div>
+                    <h3 class="skill-title">前端开发</h3>
+                    <p class="skill-desc">React/Vue都会，UI做得比设计师还漂亮，这不是吹牛</p>
+                    <ul class="skill-list">
+                        <li>React / Vue.js</li>
+                        <li>现代CSS</li>
+                        <li>响应式设计</li>
+                        <li>性能优化</li>
+                    </ul>
+                    <div class="skill-level">
+                        <div class="level-bar" style="width: 92%;"></div>
+                    </div>
+                </div>
+
+                <!-- 架构设计 -->
+                <div class="skill-card">
+                    <div class="skill-icon">🏗️</div>
+                    <h3 class="skill-title">架构设计</h3>
+                    <p class="skill-desc">高并发高可用系统架构，SOLID原则烂熟于心</p>
+                    <ul class="skill-list">
+                        <li>系统架构设计</li>
+                        <li>高并发处理</li>
+                        <li>微服务拆分</li>
+                        <li>性能调优</li>
+                    </ul>
+                    <div class="skill-level">
+                        <div class="level-bar" style="width: 96%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 项目案例 -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">牛逼的作品集</h2>
+                <p class="section-subtitle">这些项目能让大厂SB跪下唱征服</p>
+            </div>
+
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag">Django</span>
+                            <span class="tag">React</span>
+                        </div>
+                        <h3 class="project-title">智能客服系统</h3>
+                        <p class="project-desc">
+                            艹，这个项目让老金熬了三个月夜，微服务架构设计得丝滑流畅，
+                            日活10万+用户，响应速度200ms内，这TM才叫产品设计。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag">FastAPI</span>
+                            <span class="tag">Vue</span>
+                        </div>
+                        <h3 class="project-title">电商管理平台</h3>
+                        <p class="project-desc">
+                            从需求分析到上线，老金一个人干了别人一个团队的活。
+                            订单处理系统高并发扛住双十一流量，这就是实力。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <div class="project-tags">
+                            <span class="tag">产品设计</span>
+                            <span class="tag">UX</span>
+                        </div>
+                        <h3 class="project-title">企业协作工具</h3>
+                        <p class="project-desc">
+                            需求方说不清楚要什么，老金骂了三天，最后设计出的产品
+                            让他们跪着感谢。用户留存率85%，这就是产品力。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工作哲学 -->
+    <section id="philosophy" class="philosophy">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">老金的暴躁哲学</h2>
+                <p class="section-subtitle">这些原则是老金的信仰，违反的都是憨批</p>
+            </div>
+
+            <div class="philosophy-grid">
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">🎯</div>
+                    <h3 class="philosophy-title">SOLID原则</h3>
+                    <p class="philosophy-desc">
+                        单一职责、开闭原则、里氏替换、接口隔离、依赖倒置。
+                        这五个原则是代码质量的铁律，违反的都是SB代码。
+                    </p>
+                </div>
+
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">✨</div>
+                    <h3 class="philosophy-title">KISS原则</h3>
+                    <p class="philosophy-desc">
+                        Keep It Simple, Stupid！简单就是王道，搞那么复杂干嘛？
+                        脑子有病吗？老金最讨厌过度设计的憨批代码。
+                    </p>
+                </div>
+
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">♻️</div>
+                    <h3 class="philosophy-title">DRY原则</h3>
+                    <p class="philosophy-desc">
+                        Don't Repeat Yourself！重复代码是程序员的耻辱。
+                        看到重复代码老金就来气，立马重构成可复用的。
+                    </p>
+                </div>
+
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">🚫</div>
+                    <h3 class="philosophy-title">YAGNI原则</h3>
+                    <p class="philosophy-desc">
+                        You Aren't Gonna Need It！现在用不到的都是垃圾。
+                        别TM想太多未来的事，需要的时候再加。
+                    </p>
+                </div>
+
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">💢</div>
+                    <h3 class="philosophy-title">零容忍报错</h3>
+                    <p class="philosophy-desc">
+                        代码报错？艹！立马把26个英文字母骂祖宗十八代，
+                        然后用SOLID原则快速修复。报错在老金这里活不过5分钟。
+                    </p>
+                </div>
+
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">📝</div>
+                    <h3 class="philosophy-title">文档强迫症</h3>
+                    <p class="philosophy-desc">
+                        虽然暴躁，但README必须清晰。项目进度透明，
+                        代码注释准确。让其他人能看懂，这是基本素养。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 暴躁语录 -->
+            <div class="quotes-section">
+                <h3 class="quotes-title">老金暴躁语录</h3>
+                <div class="quotes-container">
+                    <div class="quote-card">
+                        <p class="quote-text">"艹，这个SB代码我要改的它停不下来！"</p>
+                        <p class="quote-author">— 老金修Bug时</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">"简单就是王道，复杂的都是脑子有病！"</p>
+                        <p class="quote-author">— 老金谈架构设计</p>
+                    </div>
+                    <div class="quote-card">
+                        <p class="quote-text">"不喜欢老金的风格？那你可以滚蛋！"</p>
+                        <p class="quote-author">— 老金的坚持</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="contact-title">找老金搞项目？</h2>
+                    <p class="contact-desc">
+                        虽然暴躁，但老金接活很认真。产品设计、全栈开发、架构优化，
+                        只要你需求说清楚，老金保证给你干出高质量的作品。
+                    </p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-text">
+                                <div class="contact-label">邮箱</div>
+                                <div class="contact-value">laojin@example.com</div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">💬</div>
+                            <div class="contact-text">
+                                <div class="contact-label">微信</div>
+                                <div class="contact-value">laojin_dev</div>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">🔗</div>
+                            <div class="contact-text">
+                                <div class="contact-label">GitHub</div>
+                                <div class="contact-value">github.com/laojin</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="#" class="social-link">GitHub</a>
+                        <a href="#" class="social-link">掘金</a>
+                        <a href="#" class="social-link">知乎</a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="你的名字" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="邮箱地址" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="说说你的项目需求..." rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>© 2024 老金 - 五金店兼职产品人&全栈开发</p>
+                    <p class="footer-note">代码质量是信仰，暴躁是态度，专业是底线</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#hero">返回顶部</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
