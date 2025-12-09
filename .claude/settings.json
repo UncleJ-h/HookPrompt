@@ -2,8 +2,8 @@
   "hooks": {
     "user-prompt-submit": {
       "enabled": true,
-      "command": "bash",
-      "args": [".claude/hooks/user-prompt-submit.sh"]
+      "command": "node",
+      "args": [".claude/hooks/user-prompt-submit.js"]
     }
   }
 }

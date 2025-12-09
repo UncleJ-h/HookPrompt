@@ -1,64 +1,98 @@
 #!/bin/bash
-
-# 提示词自动优化Hook - 展示优化结果并自动继续
+#
+# 提示词自动优化Hook - Bash版本 (Mac/Linux)
+#
+# Windows用户请使用 user-prompt-submit.js
 #
 # 工作流程：
 # 1. 用户输入提示词
 # 2. Hook优化
-# 3. 展示优化后的结果
-# 4. 自动继续执行
+# 3. 返回优化后的提示词给Claude
+#
 
-# 日志文件路径
-LOG_FILE="/tmp/hook-prompt-optimizer.log"
+set -euo pipefail
 
-# 记录Hook执行
-echo "========================================" >> "$LOG_FILE"
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Hook执行开始" >> "$LOG_FILE"
+# 跨平台临时目录
+LOG_FILE="${TMPDIR:-${TMP:-/tmp}}/hook-prompt-optimizer.log"
 
-# 读取用户输入
-USER_INPUT="$*"
-if [ -z "$USER_INPUT" ]; then
+# 日志函数
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE" 2>/dev/null || true
+}
+
+log "========================================"
+log "Hook执行开始"
+
+# 安全读取用户输入
+USER_INPUT=""
+if [ $# -gt 0 ]; then
+    USER_INPUT="$*"
+else
     USER_INPUT=$(cat)
 fi
 
-# 记录用户输入
-echo "用户输入: $USER_INPUT" >> "$LOG_FILE"
-echo "输入长度: ${#USER_INPUT}" >> "$LOG_FILE"
+# 去除首尾空白
+USER_INPUT=$(echo "$USER_INPUT" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 
-# 智能过滤：简短问题不优化（<30字）
-INPUT_LENGTH=${#USER_INPUT}
-if [ "$INPUT_LENGTH" -lt 10 ]; then
-    echo "输入太短($INPUT_LENGTH<10)，跳过优化" >> "$LOG_FILE"
-    echo "$USER_INPUT"
-    exit 0
-fi
+log "用户输入: ${USER_INPUT:0:100}..."
+log "输入长度: ${#USER_INPUT}"
 
-# 简单交互式回复不优化
+# 过滤：简单交互式回复
 case "$USER_INPUT" in
-    好的|是的|继续|谢谢|ok|OK|yes|YES|no|NO|确认|取消)
-        echo "简单交互回复，跳过优化" >> "$LOG_FILE"
+    好的|是的|继续|谢谢|ok|OK|yes|YES|no|NO|确认|取消|好|行|可以|不|嗯|y|n|Y|N)
+        log "简单回复，跳过优化"
         echo "$USER_INPUT"
         exit 0
         ;;
 esac
 
-echo "✅ 通过过滤，开始优化流程..." >> "$LOG_FILE"
-
-# 获取目录路径
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLAUDE_DIR="$(dirname "$SCRIPT_DIR")"  # .claude目录
-
-# 读取优化提示词模板
-OPTIMIZER_PROMPT_FILE="$CLAUDE_DIR/prompt-optimizer-meta.md"
-if [ ! -f "$OPTIMIZER_PROMPT_FILE" ]; then
+# 过滤：太短（< 10字符）
+INPUT_LENGTH=${#USER_INPUT}
+if [ "$INPUT_LENGTH" -lt 10 ]; then
+    log "输入太短 ($INPUT_LENGTH < 10)，跳过优化"
     echo "$USER_INPUT"
     exit 0
 fi
 
-OPTIMIZER_PROMPT=$(cat "$OPTIMIZER_PROMPT_FILE")
+log "通过过滤，开始优化..."
 
-# 构建优化请求
-OPTIMIZATION_REQUEST="$OPTIMIZER_PROMPT
+# 获取脚本目录（带fallback）
+SCRIPT_DIR=""
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)" || true
+fi
+
+# 查找模板文件
+OPTIMIZER_PROMPT_FILE=""
+if [ -n "$SCRIPT_DIR" ]; then
+    CLAUDE_DIR="$(dirname "$SCRIPT_DIR")"
+    OPTIMIZER_PROMPT_FILE="$CLAUDE_DIR/prompt-optimizer-meta.md"
+fi
+
+# 备选：用户主目录
+if [ ! -f "$OPTIMIZER_PROMPT_FILE" ]; then
+    OPTIMIZER_PROMPT_FILE="$HOME/.claude/prompt-optimizer-meta.md"
+fi
+
+# 检查模板是否存在
+if [ ! -f "$OPTIMIZER_PROMPT_FILE" ]; then
+    log "错误：模板文件未找到"
+    echo "$USER_INPUT"
+    exit 0
+fi
+
+# 读取模板
+OPTIMIZER_PROMPT=$(cat "$OPTIMIZER_PROMPT_FILE") || {
+    log "错误：读取模板文件失败"
+    echo "$USER_INPUT"
+    exit 0
+}
+
+log "模板已加载，构建优化请求..."
+
+# 构建并输出优化请求（不要分隔符，避免干扰Claude！）
+cat << EOF
+$OPTIMIZER_PROMPT
 
 ---
 
@@ -68,24 +102,9 @@ $USER_INPUT
 
 ---
 
-请严格按照格式输出优化结果，最后必须包含完整的优化后提示词。"
+请严格按照格式输出优化结果，最后必须包含完整的优化后提示词。
 
-# 输出分隔符 + 优化请求
-cat << 'EOF'
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔄 提示词自动优化中...
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+**重要**：输出优化结果后，立即执行"优化后的完整提示词"中描述的任务，不要等待用户确认。
 EOF
 
-# 输出优化请求，让模型处理
-echo "$OPTIMIZATION_REQUEST"
-
-cat << 'EOF'
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ 优化完成，自动继续执行...
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-EOF
+log "优化请求已发送"

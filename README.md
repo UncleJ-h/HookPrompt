@@ -1,18 +1,31 @@
-# 提示词自动优化Hook - 完全按照原文档流程
+# 提示词自动优化Hook
 
 > 把谷歌68页圣经+5任务元提示词变成自动执行的Hook
 > 你随便说两句大白话，AI自动翻译成专业提示词
 
 ---
 
-## 🎯 工作流程（完全按照原文档）
+## 📋 更新日志
+
+### v1.1.0 (2025-12-09)
+- ✅ **新增跨平台支持**：添加Node.js版本，Windows/Mac/Linux全平台支持
+- ✅ **修复输出格式**：去掉干扰Claude理解的分隔符
+- ✅ **修复日志路径**：使用跨平台临时目录
+- ✅ **修复路径问题**：支持`$HOME`和项目目录双重查找
+- ✅ **增强错误处理**：模板文件缺失时有日志提示
+- ✅ **优化模板**：去掉硬编码技术栈，改为智能推断
+- ✅ **统一文档**：代码和文档阈值说明一致（10字符）
+
+---
+
+## 🎯 工作流程
 
 ```
 用户发消息："做个登录"
     ↓
 Hook拦截
     ↓
-调用优化逻辑（Gemini或当前模型）
+调用优化逻辑
     ↓
 输出优化后的专业提示词：
     📝 原始输入：做个登录
@@ -24,40 +37,90 @@ Hook拦截
     ↓
 Claude收到优化后的版本
     ↓
-Claude执行任务
+Claude自动执行任务
 ```
 
 ---
 
-## 📦 已配置完成
-
-老金我已经按照原文档流程配置好了！
+## 📦 文件结构
 
 ```
 提示词Hook/
   └── .claude/
       ├── hooks/
-      │   └── user-prompt-submit.sh      ← Hook脚本
-      ├── prompt-optimizer-meta.md       ← 优化提示词模板
-      └── settings.json                   ← Hook配置
+      │   ├── user-prompt-submit.js   ← Node.js版（推荐，跨平台）
+      │   └── user-prompt-submit.sh   ← Bash版（Mac/Linux）
+      ├── prompt-optimizer-meta.md    ← 优化提示词模板
+      └── settings.json               ← Hook配置
 ```
+
+---
+
+## 🚀 快速开始
+
+### 方法1：在这个项目中使用
+
+1. 用Claude Code打开这个项目目录
+2. 随便说点什么测试（超过10个字符）
+3. 看Hook是否显示优化过程
+
+### 方法2：复制到其他项目
+
+```bash
+# 复制整个.claude目录到你的项目
+cp -r .claude /你的项目根目录/
+```
+
+### 方法3：全局配置（推荐）
+
+**Windows:**
+```powershell
+# 复制到全局配置目录
+Copy-Item -Recurse .claude\hooks $HOME\.claude\hooks
+Copy-Item .claude\prompt-optimizer-meta.md $HOME\.claude\
+```
+
+**Mac/Linux:**
+```bash
+# 复制到全局配置目录
+mkdir -p ~/.claude/hooks
+cp .claude/hooks/* ~/.claude/hooks/
+cp .claude/prompt-optimizer-meta.md ~/.claude/
+chmod +x ~/.claude/hooks/*.sh
+```
+
+然后编辑 `~/.claude/settings.json`（如果不存在就创建）：
+```json
+{
+  "hooks": {
+    "user-prompt-submit": {
+      "enabled": true,
+      "command": "node",
+      "args": ["~/.claude/hooks/user-prompt-submit.js"]
+    }
+  }
+}
+```
+
+> ⚠️ **Windows用户注意**：使用绝对路径，如 `C:/Users/你的用户名/.claude/hooks/user-prompt-submit.js`
 
 ---
 
 ## ✨ 核心特性
 
-### 1. 完全按照原文档流程
-- 用户发消息 → Hook拦截 → 优化 → 执行
-- 显示完整的优化过程（原始输入 + 优化理解 + 最终提示词）
+### 1. 跨平台支持
+- **Node.js版**（推荐）：Windows/Mac/Linux全平台支持
+- **Bash版**：Mac/Linux原生支持
 
-### 2. Gemini可选
-- **有Gemini**：调用Gemini 2.0 Flash优化（免费快速）
-- **没Gemini**：用当前Claude模型自己优化（零额外成本）
+### 2. 智能过滤
+| 输入类型 | 是否优化 |
+|---------|---------|
+| 简短问题（<10字符） | ❌ 不优化 |
+| 简单回复（"好的"、"继续"） | ❌ 不优化 |
+| 正常需求描述 | ✅ 优化 |
 
-### 3. 智能过滤
-- 简短问题（<30字）：不优化
-- 简单回复（"好的"、"继续"）：不优化
-- 只有真正需要优化的才优化
+### 3. 自动执行
+优化完成后，Claude会自动执行任务，不需要二次确认。
 
 ---
 
@@ -70,40 +133,18 @@ Claude执行任务
 做个登录功能
 ```
 
-**Hook输出**（这个会显示给你看）：
+**Hook优化后**：
 ```markdown
 📝 **原始输入**：做个登录功能
 
 🔄 **优化后的理解**：
 - **Context（上下文）**：Web应用，资深全栈工程师，生产级安全要求
-- **Task（任务）**：实现完整的用户登录功能，包括前端表单、后端验证、token生成、会话管理
-- **Format（格式）**：完整代码文件 + 关键逻辑注释 + 测试用例
+- **Task（任务）**：实现完整的用户登录功能
+- **Format（格式）**：完整代码文件 + 测试用例
 
 ✅ **优化后的完整提示词**：
-
-**任务**：实现用户登录功能
-
-**上下文**：
-- 身份：资深全栈工程师
-- 技术栈：React + TypeScript + Node.js
-- 安全要求：生产级别
-
-**具体要求**：
-1. 使用JWT做token认证
-2. 密码用bcrypt加密存储
-3. 登录失败3次锁定账号10分钟
-4. 成功后返回用户信息和token
-
-**输出格式**：
-- 完整的前后端代码文件
-- 关键逻辑注释
-- 安全最佳实践说明（防SQL注入、XSS）
-- 测试用例
+[详细的专业提示词...]
 ```
-
-**Claude收到优化后的版本，直接执行！**
-
----
 
 ### 测试2：简单问答（不优化）
 
@@ -112,12 +153,7 @@ Claude执行任务
 这是什么？
 ```
 
-**Hook输出**：
-```
-这是什么？
-```
-
-直接原样输出，不浪费时间优化。
+**输出**：原样输出，不浪费时间优化。
 
 ---
 
@@ -131,26 +167,24 @@ Claude执行任务
 {
   "hooks": {
     "user-prompt-submit": {
-      "enabled": true,  // 改成false禁用
-      "command": "bash",
-      "args": [".claude/hooks/user-prompt-submit.sh"]
+      "enabled": false
     }
   }
 }
 ```
 
-### 调整过滤规则
+### 切换Bash版本（Mac/Linux）
 
-编辑 `.claude/hooks/user-prompt-submit.sh`：
-
-```bash
-# 修改最小长度阈值（当前是30字符）
-if [ "$INPUT_LENGTH" -lt 30 ]; then
-```
-
-改成50：
-```bash
-if [ "$INPUT_LENGTH" -lt 50 ]; then
+```json
+{
+  "hooks": {
+    "user-prompt-submit": {
+      "enabled": true,
+      "command": "bash",
+      "args": [".claude/hooks/user-prompt-submit.sh"]
+    }
+  }
+}
 ```
 
 ### 自定义优化规则
@@ -162,112 +196,53 @@ if [ "$INPUT_LENGTH" -lt 50 ]; then
 
 ---
 
-## 🚀 使用方式
-
-### 方法1：在这个项目中使用
-
-1. 用Claude Code打开这个项目目录
-2. 随便说点什么测试
-3. 看Hook是否显示优化过程
-
-### 方法2：复制到其他项目
-
-```bash
-cp -r .claude /你的其他项目根目录/
-```
-
-### 方法3：全局配置（推荐）
-
-```bash
-# 复制到全局配置
-cp .claude/hooks/user-prompt-submit.sh ~/.claude/hooks/
-cp .claude/prompt-optimizer-meta.md ~/.claude/
-```
-
-然后编辑 `~/.claude/settings.json`：
-```json
-{
-  "hooks": {
-    "user-prompt-submit": {
-      "enabled": true,
-      "command": "bash",
-      "args": ["~/.claude/hooks/user-prompt-submit.sh"]
-    }
-  }
-}
-```
-
----
-
-## 📊 与原Output Style方案对比
-
-| 特性 | Hook方案（本版本） | Output Style方案 |
-|------|-----------------|----------------|
-| 工作方式 | 拦截用户输入优化 | Claude内心优化 |
-| 显示优化过程 | ✅ 明确显示 | ⚠️ 需要配置 |
-| 符合原文档 | ✅ 完全一致 | ❌ 不同实现 |
-| Gemini支持 | ✅ 可选 | ❌ 不支持 |
-| 延迟 | 0ms（当前模型） | 0ms |
-| 配置复杂度 | ⭐⭐ 中等 | ⭐ 简单 |
-
-**本版本完全按照原文档流程实现！**
-
----
-
 ## 🐛 故障排查
 
 ### 问题1：Hook没有执行
 
 **检查步骤**：
 1. 确认 `.claude/settings.json` 中 `enabled: true`
-2. 确认 `.claude/hooks/user-prompt-submit.sh` 有执行权限
+2. 确认Node.js已安装（运行 `node -v` 检查）
 3. 重启Claude Code
 
 ### 问题2：没有显示优化过程
 
 **检查**：
-- 你的输入是否太短（<30字）？
+- 你的输入是否太短（<10字符）？
 - 是否是简单回复（"好的"、"继续"）？
-- 确认 `prompt-optimizer-meta.md` 文件存在
+- 查看日志：
+  - Windows: `%TEMP%\hook-prompt-optimizer.log`
+  - Mac/Linux: `/tmp/hook-prompt-optimizer.log`
 
-### 问题3：想要配置Gemini
+### 问题3：Windows提示找不到bash
 
-编辑 `~/.claude/mcp.json`：
-```json
-{
-  "mcpServers": {
-    "gemini-nanobanana-mcp": {
-      "command": "npx",
-      "args": ["-y", "@nanobanana/gemini-mcp"],
-      "env": {
-        "GEMINI_API_KEY": "你的API Key"
-      }
-    }
-  }
-}
-```
-
-Gemini API Key免费申请：https://aistudio.google.com/
+使用Node.js版本（默认配置已经是Node.js版）。
 
 ---
 
 ## 📚 核心文件说明
 
-### 1. `user-prompt-submit.sh` ⭐⭐⭐
-Hook的核心脚本：
+### 1. `user-prompt-submit.js` ⭐⭐⭐
+Hook的核心脚本（Node.js版）：
+- 跨平台支持
 - 拦截用户输入
 - 智能过滤简单问题
 - 调用优化逻辑
 - 返回优化后的提示词
 
-### 2. `prompt-optimizer-meta.md` ⭐⭐⭐
+### 2. `user-prompt-submit.sh`
+Hook的Bash版本（Mac/Linux）：
+- 功能同上
+- 需要Bash环境
+
+### 3. `prompt-optimizer-meta.md` ⭐⭐⭐
 优化提示词模板：
 - 5任务元提示词完整版
 - CTF公式应用规则
 - 输出格式规范
 - 示例参考
 
-### 3. `settings.json`
+### 4. `settings.json`
 Hook配置文件：
 - 启用/禁用Hook
 - 指定Hook脚本路径
@@ -295,8 +270,4 @@ Hook配置文件：
 - 看到完整的优化过程
 - 享受高质量的AI对话
 
-**完全按照原文档流程！Have fun! 🚀**
-
----
-
-需要帮助？看 `TEST-GUIDE.md` 测试指南。
+**Have fun! 🚀**
