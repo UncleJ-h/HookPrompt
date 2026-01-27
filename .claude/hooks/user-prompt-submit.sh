@@ -37,6 +37,13 @@ USER_INPUT=$(echo "$USER_INPUT" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 log "用户输入: ${USER_INPUT:0:100}..."
 log "输入长度: ${#USER_INPUT}"
 
+# 过滤：Claude Code 内置命令（以 / 开头）
+if [[ "$USER_INPUT" =~ ^/ ]]; then
+    log "检测到斜杠命令（Claude Code内置命令），跳过优化"
+    echo "{}"
+    exit 0
+fi
+
 # 过滤：简单交互式回复
 case "$USER_INPUT" in
     好的|是的|继续|谢谢|ok|OK|yes|YES|no|NO|确认|取消|好|行|可以|不|嗯|y|n|Y|N)

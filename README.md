@@ -7,6 +7,11 @@
 
 ## 📋 更新日志
 
+### v1.2.1 (2026-01-27) - **新增：内置命令过滤** 🎯
+- ✅ **新增内置命令过滤**：自动识别并跳过 Claude Code 内置命令（如 `/clear`、`/help`、`/commit` 等）
+- ✅ **修复命令冲突**：解决 `/clear` 被误解为项目清理操作的问题
+- ✅ **改进用户体验**：确保所有斜杠命令能够正确触发，不被 Hook 拦截优化
+
 ### v1.2.0 (2026-01-11) - **重要更新：修复Hook触发问题** 🔥
 - ✅ **修复settings.json配置格式**：使用正确的`UserPromptSubmit`键名（PascalCase）和数组结构
 - ✅ **修复Hook输出格式**：符合Claude Code官方Hook API，使用JSON格式输出
@@ -165,7 +170,6 @@ chmod +x ~/.claude/hooks/*.sh
 > - 键名必须是 `UserPromptSubmit`（PascalCase），不是 `user-prompt-submit`
 > - 值必须是数组，包含hooks对象
 > - 必须包含 `type: "command"` 字段
->>>>>>> f94bc2b (feat(v1.2.0): 修复Hook触发问题+完善文档)
 
 ---
 
@@ -178,6 +182,7 @@ chmod +x ~/.claude/hooks/*.sh
 ### 2. 智能过滤
 | 输入类型 | 是否优化 |
 |---------|---------|
+| Claude Code内置命令（`/clear`、`/help`等） | ❌ 不优化 |
 | 简短问题（<10字符） | ❌ 不优化 |
 | 简单回复（"好的"、"继续"） | ❌ 不优化 |
 | 正常需求描述 | ✅ 优化 |

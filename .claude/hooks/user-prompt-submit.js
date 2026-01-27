@@ -57,14 +57,20 @@ function readOptimizerTemplate() {
  * 检查输入是否应该被过滤（不优化）
  */
 function shouldFilter(input) {
+    const trimmed = input.trim();
+
+    // Claude Code 内置命令 - 不应被优化
+    if (trimmed.startsWith('/')) {
+        log('检测到斜杠命令（Claude Code内置命令），跳过优化');
+        return true;
+    }
+
     // 简单交互式回复 - 不需要优化
     const simpleResponses = [
         '好的', '是的', '继续', '谢谢', 'ok', 'OK', 'yes', 'YES',
         'no', 'NO', '确认', '取消', '好', '行', '可以', '不', '嗯',
         'y', 'n', 'Y', 'N'
     ];
-
-    const trimmed = input.trim();
 
     // 精确匹配简单回复
     if (simpleResponses.includes(trimmed)) {
