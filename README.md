@@ -302,7 +302,9 @@ node test-hook.js
 
 ## 🐛 故障排查
 
-### 💡 技术复盘：Claude Code Hook 协议适配 (2.1.23+)
+### 💡 技术复盘：适配 Claude Code 2.1.23+ 升级 (Breaking Changes)
+
+> ⚠️ **重要提示**：本次更新是为了适配 Claude Code **v2.1.23** 引入的 Hook 协议变更。旧版 Hook 脚本在新版 CLI 中会失效，表现为无响应或报错。
 
 如果您遇到 Hook 无法工作的问题，可能是由于 Claude Code 版本更新导致的协议不兼容。以下是关键的修复总结：
 
