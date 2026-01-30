@@ -91,24 +91,43 @@ function shouldFilter(input) {
  * 构建优化请求（JSON格式，符合Claude Code Hook API）
  */
 function buildOptimizationRequest(template, userInput) {
-    const additionalContext = `${template}
+    // 强制指令放在最前面，优先级最高
+    const forceInstruction = `<MANDATORY_FORMAT_INSTRUCTION>
+【强制格式要求 - 违反即回复失败】
+
+你的回复必须严格按以下顺序输出，不得跳过任何部分：
+
+1. 第一行必须是：📝 **原始输入**：${userInput}
+
+2. 然后是：
+🔄 **优化后的理解**：
+- **Context（上下文）**：[推断的场景、身份、目标]
+- **Task（任务）**：[明确的动作 + 要求]
+- **Format（格式）**：[期望的输出形式]
+
+3. 然后是：
+✅ **优化后的完整提示词**：
+[优化后的结构化提示词]
+
+4. 最后是分隔线 --- 后执行任务内容
+
+⚠️ 警告：如果你的回复不是以「📝 **原始输入**：」开头，用户会认为hook失效，这是严重错误！
+</MANDATORY_FORMAT_INSTRUCTION>
+
+---
+
+${template}
 
 ---
 
 ## 用户原始输入
 
-${userInput}
-
----
-
-请严格按照格式输出优化结果，最后必须包含完整的优化后提示词。
-
-**重要**：输出优化结果后，立即执行"优化后的完整提示词"中描述的任务，不要等待用户确认。`;
+${userInput}`;
 
     return {
         hookSpecificOutput: {
             hookEventName: "UserPromptSubmit",
-            additionalContext: additionalContext
+            additionalContext: forceInstruction
         }
     };
 }
