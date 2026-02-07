@@ -55,15 +55,16 @@ function readOptimizerTemplate() {
 
 /**
  * 检查输入是否应该被过滤（不优化）
+ * ⚠️ 注意：此函数内不能写日志！否则会被过滤的输入也会产生日志输出
+ *
+ * @returns {boolean} true表示应该过滤（跳过优化），false表示需要优化
  */
 function shouldFilter(input) {
     const trimmed = input.trim();
-    log(`shouldFilter检查: "${trimmed.substring(0, 50)}..." (长度: ${trimmed.length})`);
 
     // Claude Code 内置命令和Skill命令 - 不应被优化
     // 匹配: /help, /commit, /review-pr, /skill-name:sub-command 等
     if (trimmed.startsWith('/')) {
-        log(`✓ 检测到斜杠命令: "${trimmed.substring(0, 30)}..."，跳过优化`);
         return true;
     }
 
@@ -76,17 +77,14 @@ function shouldFilter(input) {
 
     // 精确匹配简单回复
     if (simpleResponses.includes(trimmed)) {
-        log(`✓ 检测到简单回复: "${trimmed}"，跳过优化`);
         return true;
     }
 
     // 太短（< 10字符）
     if (trimmed.length < 10) {
-        log(`✓ 输入太短 (${trimmed.length} < 10)，跳过优化`);
         return true;
     }
 
-    log('✗ 未匹配任何过滤规则，需要优化');
     return false;
 }
 
@@ -137,6 +135,8 @@ ${userInput}`;
 
 /**
  * 解析 Claude Code Hook API 的 JSON 输入
+ * ⚠️ 注意：此函数在shouldFilter之前调用，不能写日志！
+ *
  * 支持多种输入格式：
  * 1. { prompt: "用户输入" } - 旧格式
  * 2. { messages: [{role: "user", content: "用户输入"}] } - 新格式
@@ -145,12 +145,9 @@ ${userInput}`;
 function parseHookInput(rawInput) {
     try {
         const parsed = JSON.parse(rawInput);
-        log('成功解析JSON输入');
-        log(`JSON字段: ${Object.keys(parsed).join(', ')}`);
 
         // 检查是否有 prompt 字段（最常见的格式）
         if (parsed.prompt) {
-            log(`从prompt字段提取用户输入: "${parsed.prompt.substring(0, 50)}..."`);
             return parsed.prompt;
         }
 
@@ -159,17 +156,14 @@ function parseHookInput(rawInput) {
             // 获取最后一条用户消息
             const lastMessage = parsed.messages[parsed.messages.length - 1];
             if (lastMessage.role === 'user' && lastMessage.content) {
-                log(`从messages数组提取用户输入: "${lastMessage.content.substring(0, 50)}..."`);
                 return lastMessage.content;
             }
         }
 
         // 如果都没有，返回原始输入
-        log('未找到标准字段，使用原始输入');
         return rawInput;
     } catch (e) {
         // 如果不是JSON，返回原始输入（可能是纯文本）
-        log('输入不是JSON格式，使用原始文本');
         return rawInput;
     }
 }
@@ -178,9 +172,6 @@ function parseHookInput(rawInput) {
  * 主函数
  */
 async function main() {
-    log('========================================');
-    log('Hook执行开始');
-
     // 从stdin读取输入
     let rawInput = '';
 
@@ -193,22 +184,23 @@ async function main() {
     }
 
     rawInput = rawInput.trim();
-    log(`原始输入: ${rawInput.substring(0, 100)}...`);
-    log(`原始输入长度: ${rawInput.length}`);
 
     // 解析输入，提取实际的用户消息
     const userInput = parseHookInput(rawInput);
-    log(`用户输入: ${userInput.substring(0, 100)}...`);
-    log(`输入长度: ${userInput.length}`);
 
-    // 检查是否需要过滤
+    // 【关键】立即检查是否需要过滤，如果需要则直接退出，不写任何日志
     if (shouldFilter(userInput)) {
-        // 简单回复不需要优化，返回空响应
-        log('简单回复，不添加额外上下文');
         process.stdout.write(JSON.stringify({}));
         return;
     }
 
+    // 只有通过过滤的输入才会执行到这里，开始写日志
+    log('========================================');
+    log('Hook执行开始');
+    log(`原始输入: ${rawInput.substring(0, 100)}...`);
+    log(`原始输入长度: ${rawInput.length}`);
+    log(`用户输入: ${userInput.substring(0, 100)}...`);
+    log(`输入长度: ${userInput.length}`);
     log('通过过滤，开始优化...');
 
     // 读取模板
